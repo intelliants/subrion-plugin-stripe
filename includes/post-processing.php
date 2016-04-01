@@ -29,18 +29,47 @@ if (isset($_POST['stripeToken']))
 	$iaStripe = $iaCore->factoryPlugin('stripe', 'common');
 
 	$iaStripe->load();
-	require_once IA_PLUGINS . 'stripe/includes/lib/init' . iaSystem::EXECUTABLE_FILE_EXT;
-
-	\Stripe\Stripe::setApiKey($iaStripe->getCredential(false));
 
 	$error = true;
 
 	try {
-		\Stripe\Charge::create(array(
-			'amount' => $temp_transaction['amount'],
-			'currency' => $temp_transaction['currency'],
-			'card' => $_POST['stripeToken']
-		));
+		$plan = $temp_transaction['plan_id'] ? $iaCore->factory('plan')->getById($temp_transaction['plan_id']) : null;
+
+		if ($plan)
+		{
+			$planName = 'subrion_plan_' . $plan['id'];
+
+			$stripePlan = array(
+				'amount' => (int)$temp_transaction['amount'],
+				'interval' => $plan['unit'],
+				'name' => $plan['title'],
+				'currency' => $temp_transaction['currency'],
+				'id' => $planName
+			);
+
+			if (isset($plan['cycles']) && $plan['cycles'] != 0)
+			{
+				$stripePlan['quantity'] = $plan['cycles'];
+			}
+
+			\Stripe\Plan::create($stripePlan);
+
+			$email = empty($temp_transaction['email']) ? iaUsers::getIdentity()->email : $temp_transaction['email'];
+
+			$customer = \Stripe\Customer::create(array(
+				'source' => $_POST['stripeToken'],
+				'plan' => $planName,
+				'email' => $email
+			));
+		}
+		else
+		{
+			\Stripe\Charge::create(array(
+				'amount' => $temp_transaction['amount'],
+				'currency' => $temp_transaction['currency'],
+				'card' => $_POST['stripeToken']
+			));
+		}
 
 		$transaction['status'] = iaTransaction::PASSED;
 
@@ -56,6 +85,8 @@ if (isset($_POST['stripeToken']))
 			'payer_email' => '',
 			'txn_id' => iaSanitize::html($_POST['stripeToken'])
 		);
+
+		$error = false;
 	}
 	catch (Exception $e)
 	{

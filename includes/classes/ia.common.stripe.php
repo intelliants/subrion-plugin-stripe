@@ -107,5 +107,7 @@ class iaStripe extends abstractCore
 		require $basePath . 'Token.php';
 		require $basePath . 'Transfer.php';
 		require $basePath . 'TransferReversal.php';
+
+		\Stripe\Stripe::setApiKey($this->getCredential(false));
 	}
 }
