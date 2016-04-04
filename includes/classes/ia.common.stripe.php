@@ -46,6 +46,27 @@ class iaStripe extends abstractCore
 		return $this->iaCore->get($key);
 	}
 
+	public function createPlan($planName, array $plan, array $transaction)
+	{
+		try
+		{
+			\Stripe\Plan::retrieve($planName);
+		}
+		catch (Exception $e)
+		{
+			$stripePlan = array(
+				'amount' => number_format($transaction['amount'], 0),
+				'interval' => $plan['unit'],
+				'quantity' => $plan['duration'],
+				'name' => $plan['title'],
+				'currency' => $transaction['currency'],
+				'id' => $planName
+			);
+
+			\Stripe\Plan::create($stripePlan);
+		}
+	}
+
 	public function load()
 	{
 		$basePath = IA_PLUGINS . 'stripe/includes/lib/';

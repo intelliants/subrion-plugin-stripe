@@ -39,20 +39,7 @@ if (isset($_POST['stripeToken']))
 		{
 			$planName = 'subrion_plan_' . $plan['id'];
 
-			$stripePlan = array(
-				'amount' => (int)$temp_transaction['amount'],
-				'interval' => $plan['unit'],
-				'name' => $plan['title'],
-				'currency' => $temp_transaction['currency'],
-				'id' => $planName
-			);
-
-			if (isset($plan['cycles']) && $plan['cycles'] != 0)
-			{
-				$stripePlan['quantity'] = $plan['cycles'];
-			}
-
-			\Stripe\Plan::create($stripePlan);
+			$iaStripe->createPlan($planName, $plan, $temp_transaction);
 
 			$email = empty($temp_transaction['email']) ? iaUsers::getIdentity()->email : $temp_transaction['email'];
 
