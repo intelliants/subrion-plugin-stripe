@@ -26,57 +26,57 @@
 
 if (isset($_POST['stripeToken']))
 {
-	$iaStripe = $iaCore->factoryPlugin('stripe', 'common');
+    $iaStripe = $iaCore->factoryPlugin('stripe', 'common');
 
-	$iaStripe->load();
+    $iaStripe->load();
 
-	$error = true;
+    $error = true;
 
-	try {
-		$plan = $temp_transaction['plan_id'] ? $iaCore->factory('plan')->getById($temp_transaction['plan_id']) : null;
+    try {
+        $plan = $temp_transaction['plan_id'] ? $iaCore->factory('plan')->getById($temp_transaction['plan_id']) : null;
 
-		if ($plan)
-		{
-			$planName = 'subrion_plan_' . $plan['id'];
+        if ($plan)
+        {
+            $planName = 'subrion_plan_' . $plan['id'];
 
-			$iaStripe->createPlan($planName, $plan, $temp_transaction);
+            $iaStripe->createPlan($planName, $plan, $temp_transaction);
 
-			$email = empty($temp_transaction['email']) ? iaUsers::getIdentity()->email : $temp_transaction['email'];
+            $email = empty($temp_transaction['email']) ? iaUsers::getIdentity()->email : $temp_transaction['email'];
 
-			$customer = \Stripe\Customer::create(array(
-				'source' => $_POST['stripeToken'],
-				'plan' => $planName,
-				'email' => $email
-			));
-		}
-		else
-		{
-			\Stripe\Charge::create(array(
-				'amount' => $temp_transaction['amount'],
-				'currency' => $temp_transaction['currency'],
-				'card' => $_POST['stripeToken']
-			));
-		}
+            $customer = \Stripe\Customer::create(array(
+                'source' => $_POST['stripeToken'],
+                'plan' => $planName,
+                'email' => $email
+            ));
+        }
+        else
+        {
+            \Stripe\Charge::create(array(
+                'amount' => $temp_transaction['amount'],
+                'currency' => $temp_transaction['currency'],
+                'card' => $_POST['stripeToken']
+            ));
+        }
 
-		$transaction['status'] = iaTransaction::PASSED;
+        $transaction['status'] = iaTransaction::PASSED;
 
-		$payer = explode(' ', iaUsers::getIdentity()->fullname);
+        $payer = explode(' ', iaUsers::getIdentity()->fullname);
 
-		$order = array(
-			'payment_gross' => (float)$temp_transaction['amount'],
-			'mc_currency' => $temp_transaction['currency'],
-			'payment_date' => date(iaDb::DATETIME_SHORT_FORMAT),
-			'payment_status' => iaLanguage::get(iaTransaction::PASSED),
-			'first_name' => iaSanitize::html($payer[0]),
-			'last_name' => isset($payer[1]) ? iaSanitize::html($payer[1]) : '',
-			'payer_email' => '',
-			'txn_id' => iaSanitize::html($_POST['stripeToken'])
-		);
+        $order = array(
+            'payment_gross' => (float)$temp_transaction['amount'],
+            'mc_currency' => $temp_transaction['currency'],
+            'payment_date' => date(iaDb::DATETIME_SHORT_FORMAT),
+            'payment_status' => iaLanguage::get(iaTransaction::PASSED),
+            'first_name' => iaSanitize::html($payer[0]),
+            'last_name' => isset($payer[1]) ? iaSanitize::html($payer[1]) : '',
+            'payer_email' => '',
+            'txn_id' => iaSanitize::html($_POST['stripeToken'])
+        );
 
-		$error = false;
-	}
-	catch (Exception $e)
-	{
-		$messages[] = 'Stripe API error: ' . $e->getMessage();
-	}
+        $error = false;
+    }
+    catch (Exception $e)
+    {
+        $messages[] = 'Stripe API error: ' . $e->getMessage();
+    }
 }

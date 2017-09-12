@@ -1,7 +1,7 @@
 <span class="payment-errors"></span>
 <span class="payment-success"></span>
 
-{ia_print_css files='_IA_URL_plugins/stripe/templates/front/css/style'}
+{ia_print_css files='_IA_URL_modules/stripe/templates/front/css/style'}
 <form action="{$smarty.const.IA_URL}pay/{$transaction.sec_key}/completed/" method="post" id="payment-form">
 	<div class="row">
 		<div class="col-md-3">

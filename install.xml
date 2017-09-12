@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin name="stripe">
+<module type="plugin" name="stripe">
 	<title>Stripe</title>
 	<summary>Stripe payment gateway integration. Allows to accept payments using Stripe</summary>
 	<author>Intelliants LLC</author>
 	<contributor>Intelliants LLC</contributor>
-	<version>1.0.0</version>
-	<date>2016-04-14</date>
+	<version>1.1.0</version>
+	<date>2017-09-12</date>
 	<category>payments</category>
-	<compatibility>4.0</compatibility>
+	<compatibility>4.1.0</compatibility>
 
 	<config group="financial" name="stripe" type="divider">Stripe</config>
 	<config group="financial" name="stripe_demo_mode" type="radio" description="Demo mode" values="0,1">1</config>
