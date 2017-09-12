@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module type="plugin" name="stripe">
-	<title>Stripe</title>
-	<summary>Stripe payment gateway integration. Allows to accept payments using Stripe</summary>
-	<author>Intelliants LLC</author>
-	<contributor>Intelliants LLC</contributor>
-	<version>1.1.0</version>
-	<date>2017-09-12</date>
-	<category>payments</category>
-	<compatibility>4.1.0</compatibility>
+    <title>Stripe</title>
+    <summary>Stripe payment gateway integration. Allows to accept payments using Stripe</summary>
+    <author>Intelliants LLC</author>
+    <contributor>Intelliants LLC</contributor>
+    <version>1.2.0</version>
+    <date>2017-09-12</date>
+    <category>payments</category>
+    <compatibility>4.2.0</compatibility>
 
-	<config group="financial" name="stripe" type="divider">Stripe</config>
-	<config group="financial" name="stripe_demo_mode" type="radio" description="Demo mode" values="0,1">1</config>
-	<config group="financial" name="stripe_key_priv_demo" type="text" description="Test Secret Key" show="stripe_demo_mode|1"><![CDATA[sk_test_FGPrK8ziKaOaRk8HeVlKXySg]]></config>
-	<config group="financial" name="stripe_key_pub_demo" type="text" description="Test Publishable Key" show="stripe_demo_mode|1"><![CDATA[pk_test_lnK5nY8IdWS42era9BXN6dhP]]></config>
-	<config group="financial" name="stripe_key_priv_live" type="text" description="Live secret key" show="stripe_demo_mode|0"><![CDATA[]]></config>
-	<config group="financial" name="stripe_key_pub_live" type="text" description="Live Publishable Key" show="stripe_demo_mode|0"><![CDATA[]]></config>
+    <config group="financial" name="stripe" type="divider">Stripe</config>
+    <config group="financial" name="stripe_demo_mode" type="radio" description="Demo mode" values="0,1">1</config>
+    <config group="financial" name="stripe_key_priv_demo" type="text" description="Test Secret Key" show="stripe_demo_mode|1"><![CDATA[sk_test_FGPrK8ziKaOaRk8HeVlKXySg]]></config>
+    <config group="financial" name="stripe_key_pub_demo" type="text" description="Test Publishable Key" show="stripe_demo_mode|1"><![CDATA[pk_test_lnK5nY8IdWS42era9BXN6dhP]]></config>
+    <config group="financial" name="stripe_key_priv_live" type="text" description="Live secret key" show="stripe_demo_mode|0"><![CDATA[]]></config>
+    <config group="financial" name="stripe_key_pub_live" type="text" description="Live Publishable Key" show="stripe_demo_mode|0"><![CDATA[]]></config>
 
-	<hooks>
-		<hook name="paymentButtons" type="smarty" filename="button" page_type="front"><![CDATA[]]></hook>
-	</hooks>
-</plugin>
+    <hooks>
+        <hook name="paymentButtons" type="smarty" filename="button" page_type="front"><![CDATA[]]></hook>
+    </hooks>
+</module>

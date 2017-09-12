@@ -24,7 +24,7 @@
  *
  ******************************************************************************/
 
-$iaStripe = $iaCore->factoryPlugin('stripe', 'common');
+$iaStripe = $iaCore->factoryModule('stripe', 'stripe', 'common');
 
 $iaView->iaSmarty->assign('transaction', $transaction);
 $iaView->iaSmarty->assign('key', $iaStripe->getCredential());

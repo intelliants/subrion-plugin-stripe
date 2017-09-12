@@ -57,7 +57,7 @@ class iaStripe extends abstractCore
             $stripePlan = array(
                 'amount' => number_format($transaction['amount'], 0),
                 'interval' => $plan['unit'],
-                'quantity' => $plan['duration'],
+                'interval_count' => $plan['duration'],
                 'name' => $plan['title'],
                 'currency' => $transaction['currency'],
                 'id' => $planName

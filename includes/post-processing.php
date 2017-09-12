@@ -24,9 +24,10 @@
  *
  ******************************************************************************/
 
-if (isset($_POST['stripeToken']))
-{
-    $iaStripe = $iaCore->factoryPlugin('stripe', 'common');
+if (isset($_POST['stripeToken'])) {
+    $iaView->set('nocsrf', true);
+
+    $iaStripe = $iaCore->factoryModule('stripe', 'stripe', 'common');
 
     $iaStripe->load();
 
@@ -35,8 +36,7 @@ if (isset($_POST['stripeToken']))
     try {
         $plan = $temp_transaction['plan_id'] ? $iaCore->factory('plan')->getById($temp_transaction['plan_id']) : null;
 
-        if ($plan)
-        {
+        if ($plan) {
             $planName = 'subrion_plan_' . $plan['id'];
 
             $iaStripe->createPlan($planName, $plan, $temp_transaction);
@@ -48,9 +48,7 @@ if (isset($_POST['stripeToken']))
                 'plan' => $planName,
                 'email' => $email
             ));
-        }
-        else
-        {
+        } else {
             \Stripe\Charge::create(array(
                 'amount' => $temp_transaction['amount'],
                 'currency' => $temp_transaction['currency'],
@@ -74,9 +72,7 @@ if (isset($_POST['stripeToken']))
         );
 
         $error = false;
-    }
-    catch (Exception $e)
-    {
+    } catch (Exception $e) {
         $messages[] = 'Stripe API error: ' . $e->getMessage();
     }
 }

@@ -32,38 +32,30 @@
 
 {ia_print_js files='https://js.stripe.com/v1/'}
 {ia_add_js}
-
 Stripe.setPublishableKey('{$key}');
 
-function stripeResponseHandler(status, response)
-{
-	if (response.error)
-	{
-		$('.payment-errors').html(response.error.message);
-		$('.submit-button').prop('disabled', false);
-	}
-	else
-	{
-		var $form = $("#payment-form");
-		var token = response['id'];
-		$form.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
-		$form.get(0).submit();
-	}
+function stripeResponseHandler(status, response) {
+    if (response.error) {
+        $('.payment-errors').html(response.error.message);
+        $('.submit-button').prop('disabled', false);
+    } else {
+        var $form = $('#payment-form');
+        var token = response['id'];
+        $form.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
+        $form.get(0).submit();
+    }
 }
-$(function()
-{
-	$('#payment-form').on('submit', function(e)
-	{
-		e.preventDefault();
+$(function() {
+    $('#payment-form').on('submit', function(e) {
+        e.preventDefault();
 
-		$('.submit-button').prop('disabled', true);
-		Stripe.createToken(
-		{
-			number: $('.card-number').val(),
-			cvc: $('.card-cvc').val(),
-			exp_month: $('.card-expiry-month').val(),
-			exp_year: $('.card-expiry-year').val()
-		}, stripeResponseHandler);
-	});
+        $('.submit-button').prop('disabled', true);
+        Stripe.createToken({
+            number: $('.card-number').val(),
+            cvc: $('.card-cvc').val(),
+            exp_month: $('.card-expiry-month').val(),
+            exp_year: $('.card-expiry-year').val()
+        }, stripeResponseHandler);
+    });
 });
 {/ia_add_js}
