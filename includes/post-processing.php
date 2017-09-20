@@ -56,6 +56,7 @@ if (isset($_POST['stripeToken'])) {
             ));
         }
 
+        $transaction['id'] = $temp_transaction['id'];
         $transaction['status'] = iaTransaction::PASSED;
 
         $payer = explode(' ', iaUsers::getIdentity()->fullname);
