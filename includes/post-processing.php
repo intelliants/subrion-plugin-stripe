@@ -55,7 +55,7 @@ if (isset($_POST['stripeToken'])) {
 
         $payer = explode(' ', iaUsers::getIdentity()->fullname);
 
-        $order = array(
+        $order = [
             'payment_gross' => (float)$temp_transaction['amount'],
             'mc_currency' => $temp_transaction['currency'],
             'payment_date' => date(iaDb::DATETIME_SHORT_FORMAT),
@@ -64,7 +64,7 @@ if (isset($_POST['stripeToken'])) {
             'last_name' => isset($payer[1]) ? iaSanitize::html($payer[1]) : '',
             'payer_email' => isset($email) ? $email : '',
             'txn_id' => iaSanitize::html($_POST['stripeToken'])
-        );
+        ];
 
         $error = false;
     } catch (Exception $e) {

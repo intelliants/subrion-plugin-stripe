@@ -48,20 +48,17 @@ class iaStripe extends abstractCore
 
     public function createPlan($planName, array $plan, array $transaction)
     {
-        try
-        {
+        try {
             \Stripe\Plan::retrieve($planName);
-        }
-        catch (Exception $e)
-        {
-            $stripePlan = array(
+        } catch (Exception $e) {
+            $stripePlan = [
                 'amount' => self::_amt($transaction['amount'], $transaction['currency']),
                 'interval' => $plan['unit'],
                 'interval_count' => $plan['duration'],
                 'name' => $plan['title'],
                 'currency' => $transaction['currency'],
                 'id' => $planName
-            );
+            ];
 
             \Stripe\Plan::create($stripePlan);
         }
@@ -69,26 +66,26 @@ class iaStripe extends abstractCore
 
     public function createCustomer($token, $planName, $email)
     {
-        return \Stripe\Customer::create(array(
+        return \Stripe\Customer::create([
             'source' => $token,
             'plan' => $planName,
             'email' => $email
-        ));
+        ]);
     }
 
     public function createCharge($token, $amount, $currencyCode)
     {
-        return \Stripe\Charge::create(array(
+        return \Stripe\Charge::create([
             'amount' => self::_amt($amount, $currencyCode),
             'currency' => $currencyCode,
             'card' => $token
-        ));
+        ]);
     }
 
     protected static function _isZeroDecimalCurrency($currencyCode)
     {
         // for the actual list refer to the https://stripe.com/docs/currencies
-        $zeroDecimalCurrencyCodes = array(
+        $zeroDecimalCurrencyCodes = [
             'BIF' => 'Burundian Franc',
             'CAF' => 'Central African Cfa Franc',
             'XPF' => 'Cfp Franc',
@@ -104,7 +101,7 @@ class iaStripe extends abstractCore
             'VUV' => 'Vanuatu Vatu',
             'VND' => 'Vietnamese Đồng',
             'XOF' => 'West African Cfa Franc'
-        );
+        ];
 
         return isset($zeroDecimalCurrencyCodes[$currencyCode]);
     }
