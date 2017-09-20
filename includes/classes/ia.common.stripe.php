@@ -55,7 +55,7 @@ class iaStripe extends abstractCore
         catch (Exception $e)
         {
             $stripePlan = array(
-                'amount' => number_format($transaction['amount'], 0),
+                'amount' => self::_amt($transaction['amount'], $transaction['currency']),
                 'interval' => $plan['unit'],
                 'interval_count' => $plan['duration'],
                 'name' => $plan['title'],
@@ -65,6 +65,57 @@ class iaStripe extends abstractCore
 
             \Stripe\Plan::create($stripePlan);
         }
+    }
+
+    public function createCustomer($token, $planName, $email)
+    {
+        return \Stripe\Customer::create(array(
+            'source' => $token,
+            'plan' => $planName,
+            'email' => $email
+        ));
+    }
+
+    public function createCharge($token, $amount, $currencyCode)
+    {
+        return \Stripe\Charge::create(array(
+            'amount' => self::_amt($amount, $currencyCode),
+            'currency' => $currencyCode,
+            'card' => $token
+        ));
+    }
+
+    protected static function _isZeroDecimalCurrency($currencyCode)
+    {
+        // for the actual list refer to the https://stripe.com/docs/currencies
+        $zeroDecimalCurrencyCodes = array(
+            'BIF' => 'Burundian Franc',
+            'CAF' => 'Central African Cfa Franc',
+            'XPF' => 'Cfp Franc',
+            'CLP' => 'Chilean Peso',
+            'KMF' => 'Comorian Franc',
+            'DJF' => 'Djiboutian Franc',
+            'GNF' => 'Guinean Franc',
+            'JPY' => 'Japanese Yen',
+            'MGA' => 'Malagasy Ariary',
+            'PYG' => 'Paraguayan Guaraní',
+            'RWF' => 'Rwandan Franc',
+            'KRW' => 'South Korean Won',
+            'VUV' => 'Vanuatu Vatu',
+            'VND' => 'Vietnamese Đồng',
+            'XOF' => 'West African Cfa Franc'
+        );
+
+        return isset($zeroDecimalCurrencyCodes[$currencyCode]);
+    }
+
+    protected static function _amt($amount, $currencyCode)
+    {
+        if (!self::_isZeroDecimalCurrency($currencyCode)) {
+            $amount *= 100;
+        }
+
+        return (int)$amount;
     }
 
     public function load()

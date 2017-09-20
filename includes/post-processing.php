@@ -41,19 +41,13 @@ if (isset($_POST['stripeToken'])) {
 
             $iaStripe->createPlan($planName, $plan, $temp_transaction);
 
-            $email = empty($temp_transaction['email']) ? iaUsers::getIdentity()->email : $temp_transaction['email'];
+            $email = empty($temp_transaction['email'])
+                ? iaUsers::getIdentity()->email
+                : $temp_transaction['email'];
 
-            $customer = \Stripe\Customer::create(array(
-                'source' => $_POST['stripeToken'],
-                'plan' => $planName,
-                'email' => $email
-            ));
+            $iaStripe->createCustomer($_POST['stripeToken'], $planName, $email);
         } else {
-            \Stripe\Charge::create(array(
-                'amount' => $temp_transaction['amount'],
-                'currency' => $temp_transaction['currency'],
-                'card' => $_POST['stripeToken']
-            ));
+            $iaStripe->createCharge($_POST['stripeToken'], $temp_transaction['amount'], $temp_transaction['currency']);
         }
 
         $transaction['id'] = $temp_transaction['id'];
@@ -68,7 +62,7 @@ if (isset($_POST['stripeToken'])) {
             'payment_status' => iaLanguage::get(iaTransaction::PASSED),
             'first_name' => iaSanitize::html($payer[0]),
             'last_name' => isset($payer[1]) ? iaSanitize::html($payer[1]) : '',
-            'payer_email' => '',
+            'payer_email' => isset($email) ? $email : '',
             'txn_id' => iaSanitize::html($_POST['stripeToken'])
         );
 
