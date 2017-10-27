@@ -1,61 +1,71 @@
-<span class="payment-errors"></span>
-<span class="payment-success"></span>
-
 {ia_print_css files='_IA_URL_modules/stripe/templates/front/css/style'}
-<form action="{$smarty.const.IA_URL}pay/{$transaction.sec_key}/completed/" method="post" id="payment-form">
-	<div class="row">
-		<div class="col-md-3">
-			<div class="form-group">
-				<label for="card-number">Card Number</label>
-				<input type="text" size="20" autocomplete="off" class="card-number form-control" id="card-number">
-			</div>
-			<div class="form-group">
-				<label for="card-cvc">CVC</label>
-				<input type="text" size="4" autocomplete="off" class="card-cvc form-control" id="card-cvc">
-			</div>
-			<div class="form-group">
-				<label>Expiration (MM/YYYY)</label>
-				<div class="row">
-					<div class="col-md-6">
-						<input type="text" size="2" class="card-expiry-month form-control">
-					</div>
-					<span class="s-divider"> / </span>
-					<div class="col-md-6">
-						<input type="text" size="4" class="card-expiry-year form-control">
-					</div>
-				</div>
-			</div>
-			<input type="submit" name="data-stripe-info" class="submit-button btn btn-primary">
-		</div>
-	</div>
-</form>
+<div id="js-stripe-container">
+    <div class="js-msg alert alert-warning" style="display: none"></div>
 
+    <form action="{$smarty.const.IA_URL}pay/{$transaction.sec_key}/completed/" method="post" class="form-horizontal">
+        {preventCsrf}
+        <div class="form-group">
+            <label class="col-sm-4 control-label" for="card-number">{lang key='card_number'}</label>
+            <div class="col-sm-6">
+                <input type="text" maxlength="20" autocomplete="off" class="js-card-number form-control" id="card-number">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label" for="card-cvc">{lang key='card_cvc'}</label>
+            <div class="col-sm-2">
+                <input type="text" maxlength="3" autocomplete="off" class="js-card-cvc form-control" id="card-cvc">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">{lang key='card_expiration'}</label>
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="text" maxlength="2" class="js-card-expiry-month form-control">
+                    </div>
+                    <div class="col-md-1"> / </div>
+                    <div class="col-md-6">
+                        <input type="text" maxlength="4" class="js-card-expiry-year form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-2">
+                <button type="submit" name="data-stripe-info" class="btn btn-primary">{lang key='proceed'}</button>
+            </div>
+        </div>
+    </form>
+</div>
 {ia_print_js files='https://js.stripe.com/v1/'}
 {ia_add_js}
-Stripe.setPublishableKey('{$key}');
-
-function stripeResponseHandler(status, response) {
-    if (response.error) {
-        $('.payment-errors').html(response.error.message);
-        $('.submit-button').prop('disabled', false);
-    } else {
-        var $form = $('#payment-form');
-        var token = response['id'];
-        $form.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
-        $form.get(0).submit();
-    }
-}
 $(function() {
-    $('#payment-form').on('submit', function(e) {
+    var $container = $('#js-stripe-container');
+
+    Stripe.setPublishableKey('{$key}');
+
+    $('form', $container).on('submit', function(e) {
         e.preventDefault();
 
-        $('.submit-button').prop('disabled', true);
+        $('button[type="submit"]').prop('disabled', true);
+
         Stripe.createToken({
-            number: $('.card-number').val(),
-            cvc: $('.card-cvc').val(),
-            exp_month: $('.card-expiry-month').val(),
-            exp_year: $('.card-expiry-year').val()
+            number: $('.js-card-number', $container).val(),
+            cvc: $('.js-card-cvc', $container).val(),
+            exp_month: $('.js-card-expiry-month', $container).val(),
+            exp_year: $('.js-card-expiry-year', $container).val()
         }, stripeResponseHandler);
     });
+
+    function stripeResponseHandler(status, response) {
+        if (response.error) {
+            $('.js-msg', $container).text(response.error.message).slideDown('fast');
+            $('button[type="submit"]', $container).prop('disabled', false);
+        } else {
+            $('form', $container)
+                .append('<input type="hidden" name="stripeToken" value="' + response.id + '">')
+                .get(0).submit();
+        }
+    }
 });
 {/ia_add_js}

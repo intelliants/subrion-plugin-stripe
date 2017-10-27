@@ -29,7 +29,7 @@ $iaStripe = $iaCore->factoryModule('stripe', 'stripe', 'common');
 $iaView->iaSmarty->assign('transaction', $transaction);
 $iaView->iaSmarty->assign('key', $iaStripe->getCredential());
 
-$content = $iaView->iaSmarty->fetch('extra:stripe/card-details-form');
+$content = $iaView->iaSmarty->fetch('module:stripe/card-details-form.tpl');
 
 $iaView->title('Pay via Stripe');
 

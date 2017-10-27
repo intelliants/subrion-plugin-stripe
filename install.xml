@@ -5,7 +5,7 @@
     <author>Intelliants LLC</author>
     <contributor>Intelliants LLC</contributor>
     <version>1.2.0</version>
-    <date>2017-09-12</date>
+    <date>2017-10-27</date>
     <category>payments</category>
     <compatibility>4.2.0</compatibility>
 
@@ -19,4 +19,10 @@
     <hooks>
         <hook name="paymentButtons" type="smarty" filename="button" page_type="front"><![CDATA[]]></hook>
     </hooks>
+
+    <phrases>
+        <phrase category="frontend" key="card_cvc">CVC</phrase>
+        <phrase category="frontend" key="card_expiration">Expiration (MM/YYYY)</phrase>
+        <phrase category="frontend" key="card_number">Card Number</phrase>
+    </phrases>
 </module>
