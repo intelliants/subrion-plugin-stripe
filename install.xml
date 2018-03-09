@@ -17,7 +17,7 @@
     <config group="financial" name="stripe_key_pub_live" type="text" description="Live Publishable Key" show="stripe_demo_mode|0"><![CDATA[]]></config>
 
     <hooks>
-        <hook name="paymentButtons" type="smarty" filename="button" page_type="front"><![CDATA[]]></hook>
+        <hook name="paymentButtons" type="smarty" filename="button.tpl" page_type="front"><![CDATA[]]></hook>
     </hooks>
 
     <phrases>
