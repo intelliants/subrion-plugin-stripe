@@ -24,5 +24,6 @@
         <phrase category="frontend" key="card_cvc">CVC</phrase>
         <phrase category="frontend" key="card_expiration">Expiration (MM/YYYY)</phrase>
         <phrase category="frontend" key="card_number">Card Number</phrase>
+        <phrase category="frontend" key="proceed">Proceed</phrase>
     </phrases>
 </module>
